@@ -75,7 +75,13 @@ umd_courses |>
 
 **Q4** Given the results for Q3, what would have made it easier to find the answer? You don't have to know *how* to accomplish this; I want you to describe in words what would make the answer easier to see. How confident are you that the answer you got is the right one, and why? **A4 Removing the N/As and TBDs in the table to see the professors listed**
 
-**Q5** Take one of the questions you listed in the final question of the pre_lab and try to answer it here in code. If you don't know how to fully answer it, write what code you can and describe in words what else you would need to do. If you got an answer, is it interesting? **A5**
+**Q5** Take one of the questions you listed in the final question of the pre_lab and try to answer it here in code. If you don't know how to fully answer it, write what code you can and describe in words what else you would need to do. If you got an answer, is it interesting? **A5 Question: Which department has the lowest mean number of seats for its classes? Answer: The National Institute of Aeronautics has the lowest with an average of 1 seat. This is interesting because I want to know more about this department that only has one available seat. It is probably a sort of independent study or something of the type.**
 
 ```{r}
+umd_courses |>
+  group_by(department) |>
+  summarise(
+    mean_seats = mean(seats)
+  ) |>
+  arrange(mean_seats)
 ```
