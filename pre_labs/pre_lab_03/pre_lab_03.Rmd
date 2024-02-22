@@ -276,10 +276,11 @@ cleaned_md_grants_loans
 
 ### Task 11: Answer our question!
 
-**Task** Write and run code to answer our original question: which zip code has gotten the most amount of money from the Maryland Tourism Board? Does that zip code make sense to you? **20001, this doesn't make too much sense because this is a zip code in Washington DC, could be because a lot of companies/organizations are based in MD**
+**Task** Write and run code to answer our original question: which zip code has gotten the most amount of money from the Maryland Tourism Board? Does that zip code make sense to you? **21202, this makes sense because this zip code is based in Baltimore around the harbor area, a lot of tourist attractions are based in Baltimore as it is one of the biggest cities and gets a lot of tourists**
 
 ```{r}
 cleaned_md_grants_loans |>
+  filter(str_detect(source, 'MARYLAND TOURISM BOARD')) |>
   group_by(zip5) |>
     summarise(
       total_amount = sum(amount)
