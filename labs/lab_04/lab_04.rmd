@@ -108,20 +108,32 @@ arrange(desc(total_facebook))
 
 **Q3.** Given the list of top spenders in A1 and the primary results for governor (<https://elections.maryland.gov/elections/2022/primary_results/gen_results_2022_1.html>), who is missing from that A1 list? Did those campaigns run Facebook ads, according to Facebook's ad library? Who are the biggest recipients of media expenses by the Democratic primary winner for governor (HINT: that person has two committees)?
 
-**A3.**
+**A3. Wes Moore/Aruna Miller and Dan Cox/Gordana Schifanelli are missing from the list. According to Facebook's ad library, the two campaigns did run Facebook ads. The biggest recipients of media expenses by Moore, the Democratic primary winner for governor, were SKDK and Foglamp.**
 
 ```{r}
-
+moore_expenses <- media_expenses_clean |>
+  filter(str_detect(committee_name, 'Moore')) |>
+  group_by(payee_clean) |>
+  summarise(
+    total_amount = sum(amount)
+  ) |>
+  arrange(desc(total_amount))
 ```
 
 **Q4.** The media expense data you cleaned also has a standardized purpose column. Write code to generate a list of the committees with the total amount of spending on online advertising. How does this list compare to the one from Q1 about top Facebook spenders? Of the top 5 committees who spent the most on Facebook ads from Q1, are there any that appear to have spent *all* of their online advertising dollars on Facebook?
 
-**A4.**
+**A4. More PACs invested in online advertising than campaigns did on Facebook. No**
 
 ```{r}
-
+online_ads_expenses <- media_expenses_clean |>
+  filter(expense_purpose == 'Online Advertising') |>
+  group_by(committee_name) |>
+  summarise(
+    total_online = sum(amount)
+  ) |>
+arrange(desc(total_online))
 ```
 
 **Q5** You've been asked to summarize your findings about spending on Facebook by Maryland political candidates. How much do we know and what don't we know? What's the best story idea you've found here?
 
-**A5**
+**A5. From the data we've examined, we know that the top spenders on Facebook advertising were mostly Democratic candidates, most of whom lost the election. I found it interesting that Wes Moore spent less money on Facebook compared to other media expenses.**
