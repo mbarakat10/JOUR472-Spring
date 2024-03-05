@@ -55,7 +55,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 ### Sentence 1
 
 -   **Sentence text**: "this deep-pocketed group has sent \$34.2 million (72.9 percent) to Republican campaigns or super PACs purely supporting Republican causes, compared to \$10.1 million (21.5 percent) to Democrats over the past three elections."
--   **Analysis summary**: [Write up two to three sentences describing the results of your analysis. Were you able to confirm the finding? If not, why not?]
+-   **Analysis summary**: I was able to confirm the finding that sports owners have sent \$34.2 million to Republicans and \$10.1 million to Democrats over the past three elections. I was also able to confirm the percentages of 72.9 and 21.5 through my analysis of the data.
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -68,9 +68,20 @@ party_donations <- donation_data |>
       .default = 'Bipartisan'
     )
   ) |>
-
   mutate(new_amount = parse_number(amount))
 
+party_donations |>
+ group_by(party) |>
+  summarise(
+    total_amount = sum(new_amount)
+    )|>
+  arrange(desc(total_amount)) |>
+  mutate(
+    total_donations = sum(total_amount),
+    pct_total = total_amount/total_donations
+  )
+
+  
 # Display results of code below this codeblock
 ```
 
