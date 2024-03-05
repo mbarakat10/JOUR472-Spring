@@ -67,7 +67,9 @@ party_donations <- donation_data |>
       party == 'Democrat' ~ 'Democrat' ,
       .default = 'Bipartisan'
     )
-  )
+  ) |>
+
+  mutate(new_amount = parse_number(amount))
 
 # Display results of code below this codeblock
 ```
