@@ -61,12 +61,13 @@ In this notebook, we are reverse engineering five sentences from the story.
 # Put code to reverse engineer sentence here
 
 party_donations <- donation_data |>
-  group_by(party) |>
-  summarise(
-    total_amount = sum(amount)
-    ) |>
-  
-  arrange(desc(total_amount))
+  mutate(
+    new_party = case_when(
+      party == 'Republican' ~ 'Republican',
+      party == 'Democrat' ~ 'Democrat' ,
+      .default = 'Bipartisan'
+    )
+  )
 
 # Display results of code below this codeblock
 ```
