@@ -85,7 +85,7 @@ weekly_calls |>
 
 Q3. Now let's look at locations. Which ones have the most calls? How would you describe them (feel free to search for more information on them)? Is there anything about the structure of the original data that might make you less confident in the counts by location or date?
 
-A3. 4540 Silver Spring Rd had the most calls. The structure of the locations in the data makes me less confident about these location counts because they are labeled differently and are not centralized
+A3. 4540 Silver Spring Rd had the most calls. The structure of the locations in the data makes me less confident about these location counts because they are labeled differently and are not standardized
 
 ```{r}
 overdose_calls |>
