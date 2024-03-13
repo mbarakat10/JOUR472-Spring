@@ -71,7 +71,7 @@ party_donations <- donation_data |>
   mutate(new_amount = parse_number(amount))
 
 party_donations |>
- group_by(party) |>
+ group_by(new_party) |>
   summarise(
     total_amount = sum(new_amount)
     )|>
@@ -87,11 +87,20 @@ party_donations |>
 
 ### Sentence 2
 
--   **Sentence text**: [Paste in sentence to engineer here]
+-   **Sentence text**: there are 40 owners who have donated at least \$100,000 to Republican causes over the 6 year period
 -   **Analysis summary**: [Write up two to three sentences describing the results of your analysis. Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
+
+republican_donations <- party_donations |>
+  filter(str_detect(party, 'Republican')) |>
+  group_by(owner) |>
+  summarise(
+    total_donations = sum(new_amount)
+  ) |>
+  filter(total_donations >= 100000) |>
+  arrange(desc(total_donations))
 
 # Display results of code below this codeblock
 
@@ -99,7 +108,7 @@ party_donations |>
 
 ### Sentence 3
 
--   **Sentence text**: [Paste in sentence to engineer here]
+-   **Sentence text**: 23 owners donated over \$100,000 to Democrat causes and candidates
 -   **Analysis summary**: [Write up two to three sentences describing the results of your analysis. Were you able to confirm the finding? If not, why not?]
 
 ```{r}
