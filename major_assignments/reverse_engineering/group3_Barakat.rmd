@@ -88,7 +88,7 @@ party_donations |>
 ### Sentence 2
 
 -   **Sentence text**: there are 40 owners who have donated at least \$100,000 to Republican causes over the 6 year period
--   **Analysis summary**: [Write up two to three sentences describing the results of your analysis. Were you able to confirm the finding? If not, why not?]
+-   **Analysis summary**: I was able to confirm this finding. At first, I thought the data was missing something because the table came out to have only 37 owners but I realized this was due to some of the owners donating together (like wife and husband), so if you count each individual, there are 40 total.
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -109,10 +109,19 @@ republican_donations <- party_donations |>
 ### Sentence 3
 
 -   **Sentence text**: 23 owners donated over \$100,000 to Democrat causes and candidates
--   **Analysis summary**: [Write up two to three sentences describing the results of your analysis. Were you able to confirm the finding? If not, why not?]
+-   **Analysis summary**: I was able to confirm this finding. Similarly, I thought something was wrong in the data because it came out to 22 not 23, but I realized this was due to a couple donating together, so if you count each individual, there are 23 total.
 
 ```{r}
 # Put code to reverse engineer sentence here
+
+democrat_donations <- party_donations |>
+  filter(str_detect(party, 'Democrat')) |>
+  group_by(owner) |>
+  summarise(
+    total_donations = sum(new_amount)
+  ) |>
+  filter(total_donations >= 100000) |>
+  arrange(desc(total_donations))
 
 # Display results of code below this codeblock
 
