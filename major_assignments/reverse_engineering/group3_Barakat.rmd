@@ -1,7 +1,7 @@
 ---
 title: "Reverse Engineering Project"
-author: "Student names here"
-date: "Date here"
+author: "Marwa Barakat, Laura Van Pate, Judith Altneu"
+date: "March 27"
 output:
   html_document:
     theme: cerulean
@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-In this notebook, we are reverse engineering the story, "Inside the Political Donation History of Wealthy Sports Owners" [STORY NAME](STORY%20URL)
+In this notebook, we are reverse engineering the story, "[Inside the Political Donation History of Wealthy Sports Owners](https://fivethirtyeight.com/features/inside-the-political-donation-history-of-wealthy-sports-owners/)"
 
 ## Load libraries
 
@@ -129,11 +129,19 @@ democrat_donations <- party_donations |>
 
 ### Sentence 4
 
--   **Sentence text**: [Paste in sentence to engineer here]
+-   **Sentence text**: MLB owners have donated the most (the table)
 -   **Analysis summary**: [Write up two to three sentences describing the results of your analysis. Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
+
+party_donations |>
+  group_by(league) |>
+  summarise(
+    total_donations = sum(new_amount),
+  ) |>
+
+  arrange(desc(total_donations))
 
 # Display results of code below this codeblock
 
@@ -141,7 +149,7 @@ democrat_donations <- party_donations |>
 
 ### Sentence 5
 
--   **Sentence text**: [Paste in sentence to engineer here]
+-   **Sentence text**: Thirteen owners have contributed directly to Trump's campaign or Trump super PACs in the 2020 election cycle, with contributions adding up to \$1,746,423
 -   **Analysis summary**: [Write up two to three sentences describing the results of your analysis. Were you able to confirm the finding? If not, why not?]
 
 ```{r}
