@@ -1,7 +1,7 @@
 ---
 title: "Reverse Engineering Project"
 author: "Marwa Barakat, Laura Van Pate, Judith Altneu"
-date: "March 27"
+date: "March 28"
 output:
   html_document:
     theme: cerulean
@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-In this notebook, we are reverse engineering the story, "[Inside the Political Donation History of Wealthy Sports Owners](https://fivethirtyeight.com/features/inside-the-political-donation-history-of-wealthy-sports-owners/)"
+In this notebook, we are reverse engineering the story, "[Inside the Political Donation History of Wealthy Sports Owners](https://fivethirtyeight.com/features/inside-the-political-donation-history-of-wealthy-sports-owners/)."
 
 ## Load libraries
 
@@ -40,7 +40,11 @@ In this section, describe the source of the data, write a basic data dictionary 
 
 donation_data <- read_csv('data/sports-political-donations.csv') |>
 
-clean_names()
+# Path to data should be loaded from folder "data" i.e. read_csv("data/name_of_data.csv")
+
+# Clean required data and prepare for analysis if needed. 
+  
+  clean_names()
 
 party_donations <- donation_data |>
   mutate(
@@ -50,11 +54,8 @@ party_donations <- donation_data |>
       .default = 'Bipartisan'
     )
   ) |>
-  mutate(new_amount = parse_number(amount))
-
-# Path to data should be loaded from folder "data" i.e. read_csv("data/name_of_data.csv")
-
-# Clean required data and prepare for analysis if needed. 
+  mutate(new_amount = parse_number(amount)) |>
+  mutate(recipient = str_to_upper(recipient))
 
 ```
 
@@ -64,7 +65,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ### Sentence 1
 
--   **Sentence text**: "this deep-pocketed group has sent \$34.2 million (72.9 percent) to Republican campaigns or super PACs purely supporting Republican causes, compared to \$10.1 million (21.5 percent) to Democrats over the past three elections."
+-   **Sentence text**: "this deep-pocketed group has sent \$34.2 million (72.9 percent) to Republican campaigns or super PACs purely supporting Republican causes, compared to \$10.1 million (21.5 percent) to Democrats over the past three elections. Less than 6 percent of contributions went to bipartisan or unaffiliated recipients."
 -   **Analysis summary**: I was able to confirm the finding that sports owners have sent \$34.2 million to Republicans and \$10.1 million to Democrats over the past three elections. I was also able to confirm the percentages of 72.9 and 21.5 through my analysis of the data.
 
 ```{r}
@@ -89,7 +90,7 @@ party_donations |>
 ### Sentence 2
 
 -   **Sentence text**: there are 40 owners who have donated at least \$100,000 to Republican causes over the 6 year period
--   **Analysis summary**: I was able to confirm this finding. At first, I thought the data was missing something because the table came out to have only 37 owners but I realized this was due to some of the owners donating together (like wife and husband), so if you count each individual, there are 40 total.
+-   **Analysis summary**: I was able to confirm this finding. At first, I thought the data was missing something because the table came out to have only 37 owners. I realized this was due to some of the owners donating together (like wife and husband), so if you count each individual, there are 40 total.
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -98,7 +99,7 @@ republican_donations <- party_donations |>
   filter(str_detect(party, 'Republican')) |>
   group_by(owner) |>
   summarise(
-    total_donations = sum(new_amount)
+    total_donations = sum(new_amount),
   ) |>
   filter(total_donations >= 100000) |>
   arrange(desc(total_donations))
@@ -119,7 +120,7 @@ democrat_donations <- party_donations |>
   filter(str_detect(party, 'Democrat')) |>
   group_by(owner) |>
   summarise(
-    total_donations = sum(new_amount)
+    total_donations = sum(new_amount),
   ) |>
   filter(total_donations >= 100000) |>
   arrange(desc(total_donations))
@@ -130,8 +131,8 @@ democrat_donations <- party_donations |>
 
 ### Sentence 4
 
--   **Sentence text**: MLB owners have donated the most (the table)
--   **Analysis summary**: [Write up two to three sentences describing the results of your analysis. Were you able to confirm the finding? If not, why not?]
+-   **Sentence text**: MLB owners have donated the most
+-   **Analysis summary**: We were able to show in our analysis that MLB owners have donated the most compared to owners from other leagues. One discrepancy between our analysis and the one in the story is that the amounts in each category are slightly less. This is likely due to the fact that when we cleaned up the data, we noticed that many donations were categorized as "Bipartisan but mostly (a specific party)." So, we mutated a new column to label all of those as Bipartisan for cleaner analysis. Because of this, our amounts are slightly off from the story because they don't account for those donations in any specific party.
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -152,10 +153,14 @@ party_donations |>
 ### Sentence 5
 
 -   **Sentence text**: Thirteen owners have contributed directly to Trump's campaign or Trump super PACs in the 2020 election cycle, with contributions adding up to \$1,746,423
--   **Analysis summary**: [Write up two to three sentences describing the results of your analysis. Were you able to confirm the finding? If not, why not?]
+-   **Analysis summary**: We were not able to replicate this finding. We found 12 of the 13 owners mentioned in the article that donated directly to Trump's campaign in the 2020 election cycle. We could not find Carolina Hurricanes owner Peter Karmanos' donations to Trump. When filtering through his name on the entire table, we could not find any of donations with a recipient of Trump or his campaign. This is why his name did not appear on this specific list. This is why there is a \$202,002 discrepancy between the total amount we found and the one mentioned in the story.
 
 ```{r}
 # Put code to reverse engineer sentence here
+
+party_donations |>
+  filter(election_year == 2020 & (str_detect(recipient, "TRUMP"))) |>
+  mutate(total_donations = sum(new_amount))
 
 # Display results of code below this codeblock
 
