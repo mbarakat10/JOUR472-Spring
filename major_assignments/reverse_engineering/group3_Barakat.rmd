@@ -42,7 +42,7 @@ donation_data <- read_csv('data/sports-political-donations.csv') |>
 
 clean_names()
 
-donation_data |>
+party_donations <- donation_data |>
   mutate(
     new_party = case_when(
       party == 'Republican' ~ 'Republican',
@@ -136,12 +136,13 @@ democrat_donations <- party_donations |>
 ```{r}
 # Put code to reverse engineer sentence here
 
-party_donations |>
+party_donations |> 
   group_by(league) |>
   summarise(
-    total_donations = sum(new_amount),
+    total_democratic = sum(new_amount[new_party == 'Democrat']),
+    total_republican = sum(new_amount[new_party == 'Republican']),
+    total_donations = sum(new_amount)
   ) |>
-
   arrange(desc(total_donations))
 
 # Display results of code below this codeblock
