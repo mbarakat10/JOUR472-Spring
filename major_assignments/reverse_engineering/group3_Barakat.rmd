@@ -153,7 +153,7 @@ party_donations |>
 ### Sentence 5
 
 -   **Sentence text**: Thirteen owners have contributed directly to Trump's campaign or Trump super PACs in the 2020 election cycle, with contributions adding up to \$1,746,423
--   **Analysis summary**: We were not able to replicate this finding. We found 12 of the 13 owners mentioned in the article that donated directly to Trump's campaign in the 2020 election cycle. We could not find Carolina Hurricanes owner Peter Karmanos' donations to Trump. When filtering through his name on the entire table, we could not find any of donations with a recipient of Trump or his campaign. This is why his name did not appear on this specific list. This is why there is a \$202,002 discrepancy between the total amount we found and the one mentioned in the story.
+-   **Analysis summary**: We were not able to replicate this finding. We found 12 of the 13 owners mentioned in the article that donated directly to Trump's campaign in the 2020 election cycle. We could not find Carolina Hurricanes owner Peter Karmanos Jr.'s donations to Trump. When filtering through his name on the entire table, we could not find any of donations with a recipient of Trump or his campaign. This is why his name did not appear on this specific list. This is why there is a \$202,002 discrepancy between the total amount we found and the one mentioned in the story.
 
 ```{r}
 # Put code to reverse engineer sentence here
