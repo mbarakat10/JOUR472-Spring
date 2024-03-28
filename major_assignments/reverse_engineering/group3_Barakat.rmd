@@ -131,7 +131,7 @@ democrat_donations <- party_donations |>
 
 ### Sentence 4
 
--   **Sentence text**: MLB owners have donated the most
+-   **Sentence text**: MLB owners have donated the most (the table)
 -   **Analysis summary**: We were able to show in our analysis that MLB owners have donated the most compared to owners from other leagues. One discrepancy between our analysis and the one in the story is that the amounts in each category are slightly less. This is likely due to the fact that when we cleaned up the data, we noticed that many donations were categorized as "Bipartisan but mostly (a specific party)." So, we mutated a new column to label all of those as Bipartisan for cleaner analysis. Because of this, our amounts are slightly off from the story because they don't account for those donations in any specific party.
 
 ```{r}
