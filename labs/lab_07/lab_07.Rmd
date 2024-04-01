@@ -116,12 +116,16 @@ moco_pop_overdose |>
 
 **Q5** Go back to your joined dataframe from Q3 and add two more columns representing the minimum and maximum populations based on the estimate and margin of error, then calculate per capita rates for each. Do you get the same two zip codes for the highest and lowest as you did before? Does that give you more or less confidence in your answers to Q3?
 
-**A5**
+**A5 20877 has the highest per capita rate when looking at the minimum population, and 20707 has the lowest, which aligns with our previous answer and makes me more confident in it.**
 
 ```{r}
 moco_pop_overdose |>
   mutate(
-    min_pop = 
-    max_pop = 
-  ) 
+    min_pop = population - moe,
+    max_pop = population + moe) |>
+  mutate(
+    min_per_capita = (total_calls/min_pop)*1000,
+    max_per_capita = (total_calls/max_pop)*1000
+  ) |>
+  arrange(desc(min_per_capita))
 ```
