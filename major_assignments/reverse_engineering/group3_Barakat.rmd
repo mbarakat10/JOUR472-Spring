@@ -57,6 +57,8 @@ party_donations <- donation_data |>
   mutate(new_amount = parse_number(amount)) |>
   mutate(recipient = str_to_upper(recipient))
 
+write_csv(party_donations, 'data/sports-political-donations.csv')
+
 ```
 
 ## Sentences to Engineer
