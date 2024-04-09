@@ -86,9 +86,9 @@ pg_county_month_percent |>
 -   Good labels for the x & y axis and a caption for the source, which is Prince George's County EMS.
 -   Readable labels
 
-Describe the pattern of results; you may want to look at the data to dig into particular outliers. **Week 28 in the year has the highest number of calls, which falls in July. The outlier – also the week with the lowest number of calls – only has 4 but it is the final week of the year, so that makes sense. The data peaks on the line chart in the middle of the year.**
+Describe the pattern of results; you may want to look at the data to dig into particular outliers.
 
-**A2.**
+**A2. Week 28 in the year has the highest number of calls, which falls in July. The outlier – also the week with the lowest number of calls – only has 4 but it is the final week of the year, so that makes sense. The data peaks on the line chart in the middle of the year.**
 
 ```{r}
 pg_county_week <- pg_county_overdose_calls |>
@@ -137,7 +137,29 @@ To answer this question, do the following:
 6.  Add a label for each point that shows the zip code using geom_text() - see some examples of its use at <https://ggplot2.tidyverse.org/reference/geom_text.html#ref-examples>. Try to make the names as easy to read as possible by avoiding overlap.
 7.  In the answer space below, describe what you see and answer the questions posed above. In a general sense, what do you think this means? Feel free to consider the actual raw values: how would you report out the main point(s) of this chart?
 
-**A3.**
+**A3. In general, as median income increases, the total number of overdose calls decreases. At the lower median incomes though, the total calls are spread out evenly.**
 
 ```{r}
+pg_calls_zipcodes <- pg_county_overdose_calls |>
+  group_by(zipcode) |>
+  summarise(
+    total_calls = n()
+  ) 
+
+census_api_key('7eeb7101193b9c08d0a867c4ea2547ecf86cd878', overwrite = TRUE) 
+
+md_median_income_zip <- get_acs(geography = 'zcta', variables = 'B19013_001', state = 'MD', year = 2019)
+
+pg_calls_with_income <- pg_calls_zipcodes |> inner_join(md_median_income_zip, by = c('zipcode'='GEOID'))
+
+pg_calls_with_income |>
+  ggplot() +
+  geom_point(aes(x=estimate, y=total_calls)) +
+  labs(
+    title = 'PG County Overdose Calls by Median Income',
+    x = 'Median Income',
+    y = 'Total Calls',
+    caption = 'Source: PG County EMS, Census Bureau'
+  ) +
+  geom_text(aes(x=estimate, y=total_calls, label=zipcode), check_overlap = TRUE, size=2, angle=45)
 ```
