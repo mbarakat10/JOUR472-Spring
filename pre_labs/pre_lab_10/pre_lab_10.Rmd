@@ -365,7 +365,7 @@ So let's change the color scale to a "log" scale, which will help us see those d
 
 ### Task: Run code
 
-**Task** Run the following code. Describe the output in the space below. What regional patterns do you see? **Answer: different rates from maps before**
+**Task** Run the following code. Describe the output in the space below. What regional patterns do you see? **Answer: different rates from maps before, Most of the region has a rate of less than 2 excluding one county. Several counties have a rate less than 0.736 as well**
 
 ```{r}
 ggplot() +
