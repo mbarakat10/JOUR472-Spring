@@ -24,6 +24,8 @@ for this lab.
 
 ```{r}
 # load libraries here
+library(janitor)
+library(tidyverse)
 ```
 
 ## Questions
