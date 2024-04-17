@@ -26,6 +26,7 @@ for this lab.
 # load libraries here
 library(janitor)
 library(tidyverse)
+library(tidycensus)
 ```
 
 ## Questions
@@ -50,9 +51,28 @@ readable labels and values \* Publish your chart \* Describe your
 thought process below - why you chose to make the chart you did - and
 add the URL of your chart.
 
-**A1.**
+**A1.** <https://datawrapper.dwcdn.net/KkhrA/2/>
+
+**I decided to make a grouped bar chart so readers can compare how each
+candidate did in each county and see the percentages side-by-side. The
+headline is the most newsworthy aspect, which is that Hogan received a
+higher percentage of votes in each county, and the description describes
+Hogan's highest.**
 
 ```{r}
+md_gov_county <- read_csv("data/md_gov_county.csv") |> 
+  clean_names()
+md_gov_county_18 <- read_csv("data/md_gov_county_18.csv") |> 
+  clean_names()
+
+md_elections_join <- md_gov_county |>
+  inner_join(md_gov_county_18, by=c('geoid','county')) |>
+  mutate(
+    cox_pct = cox/(moore+cox+lashar+harding+wallace+sefcik+write_ins.x)*100,
+    hogan_pct = hogan/(hogan+jealous+quinn+schlakman+write_ins.y)*100
+         )
+  
+write_csv(md_elections_join, "data/md_elections_join.csv")
 ```
 
 **Q2.** You're interested in seeing how the methods of voting have
@@ -71,9 +91,23 @@ column to get the option of "hiding" it in any visualization.
 What do you think the story here is? Put the answer below along with the
 URL of your chart.
 
-**A2.**
+**A2.** <https://datawrapper.dwcdn.net/qoitf/1/>
+
+**The story is the spike in mail-in votes in 2020 (most likely due to
+COVID) and then the immediate decline again in 2022**
 
 ```{r}
+md_votes_by_type <- read_csv("data/md_votes_by_type.csv") |>
+  clean_names()
+
+md_votes_by_type <- md_votes_by_type |>
+  mutate(
+    pct_early = (early/total)*100,
+    pct_election_day = (election_day/total)*100,
+    pct_mail = (mail/total)*100
+  )
+
+write_csv(md_votes_by_type, "data/md_votes_by_type_pcts.csv")
 ```
 
 **Q3.** You want to know more about the geography of 911 overdose calls
@@ -98,7 +132,26 @@ choropleth map in Datawrapper. You will need to:
 What do you think the story here is, and what would you want to know
 more about? Put the answer below along with the URL of your map.
 
-**A3.**
+**A3.** <https://datawrapper.dwcdn.net/cMbIf/1/>
+
+**The story here is why this county alone has almost one-tenth of the
+calls in the county. I want to know the populations of each zip code
+because I think that will impact the significance of the number of
+calls.**
 
 ```{r}
+montgomery_2022_overdoses <- read_csv("data/montgomery_2022_overdoses.csv")
+
+montgomery_2022_overdoses_zip <- montgomery_2022_overdoses |>
+  group_by(zip) |>
+  summarise(
+    total_calls = n()
+  ) |>
+  mutate(
+    total = sum(total_calls),
+    pct_total = (total_calls/total)*100
+  )
+
+write_csv(montgomery_2022_overdoses_zip, "data/moco_2022_overdoses_zip_2.csv")
+
 ```
