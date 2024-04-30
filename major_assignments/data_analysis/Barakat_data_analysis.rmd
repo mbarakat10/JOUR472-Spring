@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-In this notebook, we are reverse engineering the story, "[Inside the Political Donation History of Wealthy Sports Owners](https://fivethirtyeight.com/features/inside-the-political-donation-history-of-wealthy-sports-owners/)."
+In this notebook, we are analyzing board game ranking data.
 
 ## Load libraries
 
