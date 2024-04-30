@@ -41,16 +41,15 @@ Source: Board Games Geek on Kaggle, the CSV was separated by semicolons instead 
 board_game_data <- read_csv2("archive/bgg_dataset.csv") |>
   clean_names()
 
-
 ```
 
 ## Sentences to Engineer
 
-In this notebook, we are reverse engineering five sentences from the story.
+In this notebook, we are analyzing five pieces from the data.
 
 ### Sentence 1
 
--   **Sentence text**:
+-   **Sentence text**: Compare the average rating of board games between 1900-2000 and 2000-2022.
 -   **Analysis summary**:
 
 ```{r}
@@ -59,17 +58,17 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ### Sentence 2
 
--   **Sentence text**:
--   **Analysis summary**:
+-   **Sentence text**: What age group is targeted most by these board games?
+-   **Analysis summary**: make age groups
 
 ```{r}
-
-
+board_game_data |>
+  
 ```
 
 ### Sentence 3
 
--   **Sentence text**:
+-   **Sentence text**: Are solo board games more reviewed compared to multiplayer games?
 -   **Analysis summary**:
 
 ```{r}
@@ -79,7 +78,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ### Sentence 4
 
--   **Sentence text**:
+-   **Sentence text**: What years had the games owned by the most users?
 -   **Analysis summary**:
 
 ```{r}
