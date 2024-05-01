@@ -53,6 +53,7 @@ In this notebook, we are analyzing five pieces from the data.
 -   **Analysis summary**:
 
 ```{r}
+  
 
 ```
 
@@ -62,8 +63,23 @@ In this notebook, we are analyzing five pieces from the data.
 -   **Analysis summary**: make age groups
 
 ```{r}
-board_game_data |>
-  
+board_game_ages <- board_game_data |>
+  mutate(
+    age_groups = case_when(
+     between(min_age, 1, 5) ~ '1-5',
+     between(min_age, 6, 12) ~ '6-12',
+     between(min_age, 13, 17) ~ '13-17',
+     min_age >= 18 ~ '18+',
+     .default = 'N/A'
+     )
+  ) 
+
+board_game_ages |>
+  group_by(age_groups) |>
+  summarise(
+    total_counts = n()
+  ) |>
+  arrange(desc(total_counts))
 ```
 
 ### Sentence 3
