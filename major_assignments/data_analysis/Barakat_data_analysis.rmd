@@ -25,7 +25,6 @@ In this notebook, we are analyzing board game ranking data.
 Loading required libraries for this analysis.
 
 ```{r echo=FALSE, message=FALSE}
-
 library(tidyverse)
 library(janitor)
 library(lubridate)
@@ -60,7 +59,7 @@ In this notebook, we are analyzing five pieces from the data.
 ### Sentence 2
 
 -   **Sentence text**: What age group is targeted most by these board games?
--   **Analysis summary**: make age groups
+-   **Analysis summary**: In order to better look at age demographics, we grouped the minimum ages. Because the data only listed the minimum ages, we grouped them by 1-5, 6-12 , 13-17 and 18+. One important thing to note is that these aren't the age groups listed on each game but instead are the minimum ages for each game grouped together. For example, the 1-5 group is not games for ages 1 to 5. It is actually the games with minimum ages between 1 and 5 years old. The same applies to the other categories as well. After making these groups, we counted how many games fell under each one to see which age group is targeted most. There were over 14,000 games with minimum ages between 6 and 12 years old – more than any other age group. Because there were about 1,000 games with no minimum age listed, it was not possible for us to find the age of each board game, so it is important to note that those were not included in this analysis.
 
 ```{r}
 board_game_ages <- board_game_data |>
@@ -77,9 +76,10 @@ board_game_ages <- board_game_data |>
 board_game_ages |>
   group_by(age_groups) |>
   summarise(
-    total_counts = n()
+    total_games = n()
   ) |>
-  arrange(desc(total_counts))
+  filter(age_groups != 'N/A') |>
+  arrange(desc(total_games))
 ```
 
 ### Sentence 3
@@ -88,8 +88,25 @@ board_game_ages |>
 -   **Analysis summary**:
 
 ```{r}
+# This code shows the number of reviews for games that are considered multiplayer (2 or more players) compared to those that are considered singleplayer (no more than 1 player)
 
+board_game_players <- board_game_data |>
+  mutate(
+    player_type = case_when(
+    max_players <= 1~ "singleplayer",
+    max_players >= 2 ~ "multiplayer",
+    .default = NA
+  ))
 
+#Group by player type and count the number of ratings. Also, a sum of the number of games considered multiplayer and singleplayer for context.
+
+board_game_players |> 
+  group_by(player_type)|>
+  summarise(
+    total_ratings = sum(users_rated),
+    total_games = n(),
+    'avg_#_ratings_per_game' = total_ratings/total_games
+    )
 ```
 
 ### Sentence 4
