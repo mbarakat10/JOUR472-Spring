@@ -1,0 +1,101 @@
+---
+title: "lab_12"
+author: "Mitchell Hang"
+date: "2023-05-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## You will need
+
+-   tidytext and our usual libraries
+
+## Load libraries and establish settings
+
+**Task** Create a codeblock and load appropriate packages and settings for this lab.
+
+```{r}
+# Turn off scientific notation
+options(scipen=999)
+
+# Load the tidyverse.
+library(tidytext)
+library(tidyverse)
+library(dplyr)
+library(janitor)
+library(lubridate)
+library(rvest)
+```
+
+## Questions
+
+**Q1.** You've been assigned to report a story about the leading reasons that Maryland attorneys get sanctioned by the state for misconduct. The state [publishes lists of sanctions](https://www.courts.state.md.us/attygrievance/sanctions) that contain a short text description about the situation. Load the CSV file in the data folder containing records from fiscal year 2011 onwards. Make a list of unique words from the text column, then following the example in the pre_lab, remove common "stop words" from that list and create a list of the top 10 words containing the percentage of occurrences each word represents. What's the leading word in that answer and, broadly, what do you think the top 10 words describe?
+
+```{r}
+#Load the data
+md_attorney_sanctions <- read_csv("data/md_attorney_sanctions.csv")
+```
+
+```{r}
+#Create list of unique words
+unique_words <- md_attorney_sanctions |> select(text) |>
+  unnest_tokens(word, text)
+```
+
+```{r}
+#Load stop words
+data("stop_words")
+
+stop_words <- stop_words |>
+  add_row(word = 'attorney') |> 
+  add_row(word = "client") |>
+  add_row(word = "clients") |>
+  add_row(word = "conduct")
+```
+
+```{r}
+#Remove stop words from unique words list
+unique_words |>
+  anti_join(stop_words) |>
+  group_by(word) |>
+  tally(sort=TRUE) |>
+  mutate(percent = (n/sum(n))*100) |>
+  top_n(10)
+```
+
+**A1. The leading word is "failing." This can be attributed to the fact that each sanction describes an attorney failing to do something, which is why they are even being sanctioned at all. Looking at the list broadly, this list describes attorneys failing to deal with clients appropriately with words like "trust" and "consent" being there as well as "funds."**
+
+------------------------------------------------------------------------
+
+**Q2.** Let's move beyond single words to phrases. Make a list of the top 10 three-word phrases, called trigrams, based on the example from the pre_lab (you'll need to modify the example code to do this). What's the top trigram and how often does it appear? What does that phrase mean in legal terms?
+
+```{r}
+# Check the task 12 on Pre-lab 12 to see if you can use that code
+md_attorney_sanctions |>
+  unnest_tokens(trigram, text, token = "ngrams", n = 3) |>
+  separate(trigram, c("word1", "word2", "word3"), sep = " ") |>
+  filter(!word1 %in% stop_words$word) |>
+  filter(!word2 %in% stop_words$word) |>
+  filter(!word3 %in% stop_words$word) |>
+  mutate(trigram = paste(word1, word2, word3, sep=" ")) |>
+  group_by(trigram) |>
+  tally(sort=TRUE) |>
+  mutate(percent = (n/sum(n))*100) |>
+  top_n(10)
+```
+
+**A2. The top trigram is "attorney trust account," which appears 343 times. An attorney trust account is a specific bank account in which client funds are kept safe until it's time to withdraw them, according to Smokeball.**
+
+------------------------------------------------------------------------
+
+Q3. Let's drop back down to more traditional text analysis - take the top trigram from Q2 and write code to see how many times it occurs in the text column in each fiscal year. What do you think the answer produced by your code suggests? What else could you do to try and clarify the most important reasons attorneys get sanctioned?
+
+```{r}
+md_attorney_sanctions |>
+  filter(str_detect(text, "attorney trust account"))
+```
+
+**A3. This phrase appears in 189 rows. This suggests that there is clearly an issue in which attorneys are mishandling the attorney trust accounts and their funds if there were 189 separate sanctions with that phrase included. To clarify other important reasons attorneys get sanctioned, one could use strdetect to count how many times other significant trigrams were repeated and research how big of a violation those are.**
