@@ -28,6 +28,8 @@ Loading required libraries for this analysis.
 library(tidyverse)
 library(janitor)
 library(lubridate)
+
+options(scipen = 999)
 ```
 
 ## Load and Cleaning Data
@@ -49,11 +51,27 @@ In this notebook, we are analyzing five pieces from the data.
 ### Sentence 1
 
 -   **Sentence text**: Compare the average rating of board games between 1900-2000 and 2000-2022.
+
 -   **Analysis summary**:
 
-```{r}
-  
+    We mutated the data so that we could compare both centuries in terms of average rating for board games. We mutated the years published and grouped by timespan for average rating, and got approximately 6.5 for the average rating from 2000 to 2022, and 6 for the average rating from 1900-1999. In terms of modern board games, it seems that the 21st century has a higher average score. This could be due to differing total amounts for each of the centuries, which could skew the data.
 
+```{r}
+board_game_years <- board_game_data |>
+  mutate(
+    era = case_when(
+     between(year_published, 1900, 1999) ~ '1900-1999',
+     between(year_published, 2000, 2022) ~ '2000-2022',
+     .default = 'N/A'
+     ))
+
+board_game_years |>
+  group_by(era) |>
+  summarise(
+    avg_rating = mean(rating_average)
+  ) |>
+  filter(era != 'N/A') |>
+  arrange(desc(avg_rating))
 ```
 
 ### Sentence 2
@@ -85,43 +103,90 @@ board_game_ages |>
 ### Sentence 3
 
 -   **Sentence text**: Are solo board games more reviewed compared to multiplayer games?
+
 -   **Analysis summary**:
+
+    Singleplayer games have fewer reviews than multiplayer games, as shown by the total ratings column below. There are about 168,000 more reviews for multiplayer games than singleplayer games. However, there is also a much larger number of multiplayer games overall when compared to singleplayer - there are less than 500 singleplayer games in the review list. This means that there are statistically more opportunities to review multiplayer games than singleplayer and, potentially, groups involved in playing multiplayer games may individually leave multiple reviews for those games, resulting in many more ratings for those games than singleplayers. We calculated an average number of ratings to account for this difference, showing multiplayer games on average have a higher number of ratings.
 
 ```{r}
 # This code shows the number of reviews for games that are considered multiplayer (2 or more players) compared to those that are considered singleplayer (no more than 1 player)
 
+
+
 board_game_players <- board_game_data |>
+  mutate(total_players = min_players+max_players) |>
   mutate(
     player_type = case_when(
-    max_players <= 1~ "singleplayer",
-    max_players >= 2 ~ "multiplayer",
+    total_players <= 1~ "singleplayer",
+    total_players >= 2 ~ "multiplayer",
     .default = NA
   ))
 
+
 #Group by player type and count the number of ratings. Also, a sum of the number of games considered multiplayer and singleplayer for context.
 
-board_game_players |> 
+
+board_game_player_ages <- board_game_players |> 
   group_by(player_type)|>
   summarise(
     total_ratings = sum(users_rated),
-    total_games = n(),
-    'avg_#_ratings_per_game' = total_ratings/total_games
+    total_games = n()
     )
+
+board_game_player_ages |>
+  mutate(
+    avg_ratings = (total_ratings/sum(total_ratings))*100
+  ) |>
+  arrange(desc(avg_ratings))
+
 ```
 
 ### Sentence 4
 
--   **Sentence text**: What years had the games owned by the most users?
+-   **Sentence text**: What decade had games owned by the most users?
 -   **Analysis summary**:
 
 ```{r}
 
+board_game_owners <- board_game_data |>
+   mutate(
+    decades = case_when(
+     between(year_published, 1900, 1909) ~ '1900-1909',
+     between(year_published, 1910, 1919) ~ '1910-1919',
+     between(year_published, 1920, 1929) ~ '1920-1929',
+     between(year_published, 1930, 1939) ~ '1930-1939',
+     between(year_published, 1940, 1949) ~ '1940-1949',
+     between(year_published, 1950, 1959) ~ '1950-1959',
+     between(year_published, 1960, 1969) ~ '1960-1969',
+     between(year_published, 1970, 1979) ~ '1970-1979',
+     between(year_published, 1980, 1989) ~ '1980-1989',
+     between(year_published, 1990, 1999) ~ '1990-1999',
+     between(year_published, 2000, 2009) ~ '2000-2009',
+     between(year_published, 2010, 2019) ~ '2010-2019',
+     between(year_published, 2020, 2022) ~ '2020-2022',
+     .default = 'N/A'
+     ))
 
+board_game_owner_decades <- board_game_owners |>
+  group_by(decades) |>
+  filter(owned_users != 'N/A') |>
+  filter(decades != 'N/A') |>
+  summarise(
+    total_games = n(),
+    total_owners = sum(owned_users)
+    ) 
+
+board_game_owner_decades |>
+  mutate(
+    avg_per_game = total_owners/total_games,
+    avg_ratings = (total_owners/sum(total_owners))*100
+  ) |>
+  arrange(desc(avg_ratings))
 ```
 
 ### Sentence 5
 
--   **Sentence text**:
+-   **Sentence text**: What are the domains with the highest average ratings?
 -   **Analysis summary**:
 
 ```{r}
