@@ -186,11 +186,40 @@ board_game_owner_decades |>
 
 ### Question 5
 
--   **Question**: What are the domains with the highest average ratings?
--   **Analysis summary**:
+-   **Question**: Compare two of the most common domains and how many games there are of them.
+-   **Analysis summary**: First, we wanted to see which domains were the most popular that the baord games in this data fell under. After analyzing the data and noticing that strategy games and wargames were the most common domains, we decided to compare those two categories alone. Since the domain category listed all applicable categories, we first used strdetect to find all of the games with "Strategy Games" as one of their domains and counted how many there were. Next, we did the same for "Wargames." After doing this, we found that this data set had 3316 wargames and 2205 strategy games, showing that from the games in this data set, wargames are more common.
 
 ```{r}
+#This is to see which domains are most common in this data set
+board_game_domains <- board_game_data |>
+  group_by(domains) |>
+  summarise(
+    count = n()
+  ) |>
+  arrange(desc(count))
 
+
+strategy <- board_game_data |>
+  filter(str_detect(domains, "Strategy Games")) |>
+  group_by(domains) |>
+  summarise(
+    total_games = n(),
+    ) |>
+  mutate(
+    total = sum(total_games)
+  )
+
+
+
+war <- board_game_data |>
+  filter(str_detect(domains, "Wargames")) |>
+  group_by(domains) |>
+  summarize(
+    total_games = n()) |>
+  mutate(
+    total = sum(total_games)
+  )
+  
 
 ```
 
