@@ -56,7 +56,7 @@ md_counties <- counties() |>  filter(STATEFP == "24")
 counties_childcare <- left_join(childcare_inspections, md_counties, join_by("fips"== "GEOID"))
 ```
 
-##### A1:  The best column with county names to use is the NAMELSAD because Baltimore County and Baltimore City are both called Baltimore in the Name column so there would be no differentiation. 
+##### A1: The best column with county names to use is the NAMELSAD because Baltimore County and Baltimore City are both called Baltimore in the Name column so there would be no differentiation.
 
 ------------------------------------------------------------------------
 
@@ -154,7 +154,7 @@ ggplot(income_counties_childcare, aes(x=median_income, y=rate)) +
 cor.test(income_counties_childcare$median_income, income_counties_childcare$rate)
 ```
 
-##### A5:  Given the scatter plot showing no correlation with the data points and a p value of 0.6067 (much greater than 0,05, meaning it's not statistically significant), we can see there is no correlation between median income and rate of children per facilities.
+##### A5: Given the scatter plot showing no correlation with the data points and a p value of 0.6067 (much greater than 0,05, meaning it's not statistically significant), we can see there is no correlation between median income and rate of children per facilities.
 
 ------------------------------------------------------------------------
 
